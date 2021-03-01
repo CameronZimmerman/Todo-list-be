@@ -35,7 +35,7 @@ describe('app routes', () => {
 
       const newTodo = {
         'todo': 'eat lasagna',
-        'completed': false
+        'complete': false
       };
       const expectation = [
         {
@@ -47,12 +47,32 @@ describe('app routes', () => {
 
       const data = await fakeRequest(app)
         .post('/api/todos')
-        .set('Authorization', token)
         .send(newTodo)
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
 
-      expect(data.body).toEqual(expectation);
+      expect([data.body]).toEqual(expectation);
+    });
+
+    test('get todos for specific user', async() => {
+
+      const expectation = [
+        {
+          'todo': 'eat lasagna',
+          'complete': false,
+          'id': 4,
+          'user_id': 2
+        },
+      ];
+
+      const data = await fakeRequest(app)
+        .get('/api/todos')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body.rows).toEqual(expectation);
     });
   });
 });

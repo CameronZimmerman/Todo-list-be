@@ -48,6 +48,7 @@ describe('app routes', () => {
       const data = await fakeRequest(app)
         .post('/api/todos')
         .set('Authorization', token)
+        .send(newTodo)
         .expect('Content-Type', /json/)
         .expect(200);
 

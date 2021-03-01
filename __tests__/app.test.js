@@ -18,8 +18,8 @@ describe('app routes', () => {
       const signInData = await fakeRequest(app)
         .post('/auth/signup')
         .send({
-          email: 'jon@user.com',
-          password: '1234'
+          email: 'gar@field.com',
+          password: 'lasagna'
         });
       
       token = signInData.body.token; // eslint-disable-line
@@ -31,31 +31,23 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    test('returns animals', async() => {
+    test('creates todo for specific user', async() => {
 
+      const newTodo = {
+        'todo': 'eat lasagna',
+        'completed': false
+      };
       const expectation = [
         {
-          'id': 1,
-          'name': 'bessie',
-          'coolfactor': 3,
-          'owner_id': 1
+          ...newTodo,
+          'id': 4,
+          'user_id': 2
         },
-        {
-          'id': 2,
-          'name': 'jumpy',
-          'coolfactor': 4,
-          'owner_id': 1
-        },
-        {
-          'id': 3,
-          'name': 'spot',
-          'coolfactor': 10,
-          'owner_id': 1
-        }
       ];
 
       const data = await fakeRequest(app)
-        .get('/animals')
+        .post('/api/todos')
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
 

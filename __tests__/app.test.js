@@ -75,7 +75,7 @@ describe('app routes', () => {
       expect(data.body).toEqual(expectation);
     });
 
-    test('update todo for specific user', async() => {
+    test('update todo for specific user by id', async() => {
 
       const expectation = 
         {
@@ -86,7 +86,7 @@ describe('app routes', () => {
         };
 
       const data = await fakeRequest(app)
-        .put('/api/todos')
+        .put('/api/todos/4')
         .send({ 'complete': true })
         .set('Authorization', token)
         .expect('Content-Type', /json/)

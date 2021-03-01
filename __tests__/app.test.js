@@ -72,7 +72,27 @@ describe('app routes', () => {
         .expect('Content-Type', /json/)
         .expect(200);
 
-      expect(data.body.rows).toEqual(expectation);
+      expect(data.body).toEqual(expectation);
+    });
+
+    test('update todo for specific user', async() => {
+
+      const expectation = 
+        {
+          'todo': 'eat lasagna',
+          'complete': true,
+          'id': 4,
+          'user_id': 2
+        };
+
+      const data = await fakeRequest(app)
+        .put('/api/todos')
+        .send({ 'complete': true })
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
     });
   });
 });

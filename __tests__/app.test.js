@@ -18,8 +18,8 @@ describe('app routes', () => {
       const signInData = await fakeRequest(app)
         .post('/auth/signup')
         .send({
-          email: 'jon@user.com',
-          password: '1234'
+          email: 'gar@field.com',
+          password: 'lasagna'
         });
       
       token = signInData.body.token; // eslint-disable-line
@@ -31,31 +31,64 @@ describe('app routes', () => {
       return client.end(done);
     });
 
-    test('returns animals', async() => {
+    test('creates todo for specific user', async() => {
 
+      const newTodo = {
+        'todo': 'eat lasagna',
+        'complete': false
+      };
       const expectation = [
         {
-          'id': 1,
-          'name': 'bessie',
-          'coolfactor': 3,
-          'owner_id': 1
+          ...newTodo,
+          'id': 4,
+          'user_id': 2
         },
-        {
-          'id': 2,
-          'name': 'jumpy',
-          'coolfactor': 4,
-          'owner_id': 1
-        },
-        {
-          'id': 3,
-          'name': 'spot',
-          'coolfactor': 10,
-          'owner_id': 1
-        }
       ];
 
       const data = await fakeRequest(app)
-        .get('/animals')
+        .post('/api/todos')
+        .send(newTodo)
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect([data.body]).toEqual(expectation);
+    });
+
+    test('get todos for specific user', async() => {
+
+      const expectation = [
+        {
+          'todo': 'eat lasagna',
+          'complete': false,
+          'id': 4,
+          'user_id': 2
+        },
+      ];
+
+      const data = await fakeRequest(app)
+        .get('/api/todos')
+        .set('Authorization', token)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+    });
+
+    test('update todo for specific user by id', async() => {
+
+      const expectation = 
+        {
+          'todo': 'eat lasagna',
+          'complete': true,
+          'id': 4,
+          'user_id': 2
+        };
+
+      const data = await fakeRequest(app)
+        .put('/api/todos/4')
+        .send({ id: 4 })
+        .set('Authorization', token)
         .expect('Content-Type', /json/)
         .expect(200);
 
